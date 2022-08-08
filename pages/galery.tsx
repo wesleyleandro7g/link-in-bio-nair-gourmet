@@ -3,20 +3,23 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 
+import { server } from "../config";
+
 import logo from "../public/icons/nair-logo.svg";
 import arrowBack from "../public/icons/arrow-back.svg";
 import whatsappwhite from "../public/icons/logo-whatsapp-white.svg";
 
-import { imagesGalery } from "../utils/imagesImported";
+interface DataProps {
+  data: string[];
+}
 
-const Galery: NextPage = () => {
+const Galery: NextPage<DataProps> = (props) => {
   return (
     <>
       <Head>
         <title>Nair Gourmet</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-
       <div className="container-galery">
         <header className="header">
           <Link href="/">
@@ -27,10 +30,14 @@ const Galery: NextPage = () => {
         </header>
 
         <div className="content">
-          {imagesGalery?.map((image, index) => (
+          {props.data?.map((image, index) => (
             <Image
               key={index}
               src={image}
+              width={350}
+              height={400}
+              layout="intrinsic"
+              objectFit="cover"
               className="image-galery"
               alt="Produto da Nair Gourmet"
             />
@@ -50,5 +57,22 @@ const Galery: NextPage = () => {
     </>
   );
 };
+
+export async function getStaticProps() {
+  const res = await fetch(`${server}/api/readImages`);
+  const data = await res.json();
+
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
 
 export default Galery;
