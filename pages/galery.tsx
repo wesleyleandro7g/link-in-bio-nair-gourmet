@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 
 import { server } from "../config";
 
@@ -59,10 +60,14 @@ const Galery: NextPage<DataProps> = (props) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(`${server}/api/readImages`);
-  const data = await res.json();
+  const res = await axios.get(`${server}/api/readImages`, {
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      "User-Agent": "*",
+    },
+  });
 
-  if (!data) {
+  if (!res.data) {
     return {
       notFound: true,
     };
@@ -70,7 +75,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      data,
+      data: res.data,
     },
   };
 }
