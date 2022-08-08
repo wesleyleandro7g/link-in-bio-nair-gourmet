@@ -26,6 +26,12 @@ const Home: NextPage<HomeProps> = () => {
       <div className="container">
         <Image src={logo} alt="Nair Gourmet Logo" />
 
+        <div className="description">
+          <h1>
+            Bolos para aniversários, festas e eventos. Bolos no pote e taças.
+          </h1>
+        </div>
+
         <div className="social">
           <a
             href="https://api.whatsapp.com/send?phone=5538991681423&text=Ol%C3%A1%2C%20tudo%20bem%3F%20Gostaria%20de%20fazer%20uma%20encomenda."
@@ -57,6 +63,8 @@ const Home: NextPage<HomeProps> = () => {
               src={image}
               width={108}
               height={114}
+              layout="intrinsic"
+              objectFit="cover"
               className="image"
               alt="Produto da Nair Gourmet"
             />
