@@ -2,16 +2,15 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
-
-import { server } from "../config";
+import fs from "fs";
+import path from "path";
 
 import logo from "../public/icons/nair-logo.svg";
 import arrowBack from "../public/icons/arrow-back.svg";
 import whatsappwhite from "../public/icons/logo-whatsapp-white.svg";
 
 interface DataProps {
-  data: string[];
+  images: string[];
 }
 
 const Galery: NextPage<DataProps> = (props) => {
@@ -31,7 +30,7 @@ const Galery: NextPage<DataProps> = (props) => {
         </header>
 
         <div className="content">
-          {props.data?.map((image, index) => (
+          {props?.images?.map((image, index) => (
             <Image
               key={index}
               src={image}
@@ -60,14 +59,17 @@ const Galery: NextPage<DataProps> = (props) => {
 };
 
 export async function getStaticProps() {
-  const res = await axios.get(`${server}/api/readImages`, {
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "User-Agent": "*",
-    },
-  });
+  const dirRelativeToPublicFolder = "static";
 
-  if (!res.data) {
+  const dir = path.resolve("./public", dirRelativeToPublicFolder);
+
+  const filenames = fs.readdirSync(dir);
+
+  const images = filenames.map((name) =>
+    path.join("/", dirRelativeToPublicFolder, name)
+  );
+
+  if (!images) {
     return {
       notFound: true,
     };
@@ -75,7 +77,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      data: res.data,
+      images,
     },
   };
 }
